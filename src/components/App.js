@@ -6,13 +6,15 @@ function App() {
   // console.log(authService.currentUser)
   // const auth = fbase.auth();
 
-  const [init, setInit] = useState(false)
+  const [init, setInit] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(authService.currentUser);
+  const [user, setUser] = useState(null);
   
   useEffect(() => {
     authService.onAuthStateChanged((user) => {
       if(user) {
         setIsLoggedIn(true)
+        setUser(user)
       } else {
         setIsLoggedIn(false)
       }
@@ -22,7 +24,7 @@ function App() {
 
   return (
     <>
-      {init ? <AppRouter isLoggedIn={isLoggedIn} /> : "initializing..."}
+      {init ? <AppRouter isLoggedIn={isLoggedIn} user={user} /> : "initializing..."}
       <footer>&copy; {new Date().getFullYear()}</footer>
     </>
   )
