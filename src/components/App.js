@@ -10,6 +10,8 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(authService.currentUser);
   const [user, setUser] = useState(null);
   
+
+  // *onAuthStateChanged 로그인 로그아웃할때 앱이 초기화할때 이벤트 일어남
   useEffect(() => {
     authService.onAuthStateChanged((user) => {
       if(user) {
