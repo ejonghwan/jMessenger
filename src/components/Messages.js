@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { dbService } from 'fbase'
+import { dbService, storageService } from 'fbase'
 
 
 const Messages = ({ data, isOwner }) => {
@@ -10,13 +10,7 @@ const Messages = ({ data, isOwner }) => {
     // console.log(data.id)
     // console.log(isOwner)
 
-    // *doc.delete
-    const handleDelete = async () => {
-        const ok = window.confirm('Are you sure you want to delete this nweet?');
-        if(ok) {
-            await dbService.doc(`jmessage/${data.id}`).delete()
-        };
-    } ;
+
 
     const handleToggle = () => {
         setIsEditing(prev => !prev);
@@ -30,16 +24,26 @@ const Messages = ({ data, isOwner }) => {
     // *doc.update는 반드시 이전에 있는 데이터와 일치해야됨
     const handleEditSubmit = async e => {
         e.preventDefault();
-        await dbService.doc(`jmessage/${data.id}`).update({
+        await dbService.doc(`jmessage/${data.id}`).update({ //firestroe.doc은 패스형식 입력
             text: edit,
         });
         setIsEditing(false);
     };
 
+    // *doc.delete
+    const handleDelete = async () => {
+        const ok = window.confirm('Are you sure you want to delete this nweet?');
+        if(ok) {
+            await dbService.doc(`jmessage/${data.id}`).delete()
+            await storageService.refFromURL(data.imgUrl).delete()
+        };
+    } ;
+
 
     return (
         <li key={data.id} >
             {data.text}
+            {data.imgUrl && <img src={data.imgUrl} width="50px" height="50px" />}
             {isOwner && (
                 <>
                     {isEditing ? (

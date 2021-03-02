@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { dbService } from 'fbase';
+import { dbService, storageService } from 'fbase';
 import Massages from 'components/Messages'
 
 
@@ -7,10 +7,10 @@ const Home = ({ user }) => {
 
     const [jmessage, setjmessage] = useState('')
     const [messageArr, setMessageArr] = useState([]);
-    const [img, setImg] = useState()
+    const [imgFile, setImgFile] = useState()
 
 
-    // forEach 방식
+    // get 방식
     // const getDbValue = async() => {
     //     const getData = await dbService.collection("jmessage").get()
         // getData.forEach(document => {
@@ -38,15 +38,35 @@ const Home = ({ user }) => {
         })
     }, [])
 
+    const handleRandom = () => {
+        return Math.random().toString(36).replace('.', '')
+    }
+
 
     // *collection.add 보내기
-    const onSubmit = e => {
+    const onSubmit = async e => {
         e.preventDefault();
-        dbService.collection("jmessage").add({
+        let imgUrl = "";
+        if(imgUrl !== "") { //imgUrl ???만 넣어도 될까 ?
+            const fileRef = storageService.ref().child(`${user.uid}/${handleRandom()}`)
+            const res =  await fileRef.putString(imgFile, "data_url")
+            imgUrl = await res.ref.getDownloadURL()
+        }
+        
+        const jmessages = {
             text: jmessage,
             createdAt: Date.now(),
             createId: user.uid,
-        })
+            imgUrl: imgUrl, 
+        }
+
+        dbService.collection("jmessage").add(jmessages)
+
+        // dbService.collection("jmessage").add({
+        //     text: jmessage,
+        //     createdAt: Date.now(),
+        //     createId: user.uid,
+        // })
         // dbService.collection("jmessage").orderBy("createdAt", "desc")
     }
 
@@ -57,16 +77,17 @@ const Home = ({ user }) => {
 
     const onFileChange = e => {
         const { target: { files } } = e
-        const theFile = files[0]
-        const reader = new FileReader()
+        const theFile = files[0];
+        const reader = new FileReader();
+        reader.onloadend = (finishedEvent) => {
+            const { currentTarget: { result } } = finishedEvent;
+            setImgFile(result)
+        }
         reader.readAsDataURL(theFile)
-        reader.onloadend = finishedEvent => {
-            console.log(finishedEvent)
-            setImg(finishedEvent.target.result)
-        } 
+        console.log(imgFile)
     }
 
-    const handleImageClear = e => setImg(null)
+    const handleClear = e => setImgFile(null)
 
     return (
         <div>
@@ -80,10 +101,10 @@ const Home = ({ user }) => {
                 />
                 <input type="file" accept="image/*" onChange={onFileChange}/>    
                 <input type="submit" value="init" />
-                {img && (
+                {imgFile && (
                     <div>
-                        <img src={img} width="50px" height="50px;" />
-                        <button onClick={handleImageClear}>clear img</button>
+                        <img  src={imgFile} accept="image/*" width="50px" height="50px;" />
+                        <button onClick={handleClear}>clear img</button>
                     </div>
                 )}
                 
