@@ -26,9 +26,7 @@ const Home = ({ user }) => {
     useEffect(() => {
         // getDbValue()
         dbService.collection("jmessage").onSnapshot(snap => {
-            // console.log(snap)
             const data = snap.docs.map( doc => {
-                console.log(doc)
                 return {
                     id: doc.id,
                     ...doc.data(),
@@ -47,8 +45,9 @@ const Home = ({ user }) => {
     const onSubmit = async e => {
         e.preventDefault();
         let imgUrl = "";
-        if(imgUrl !== "") { //imgUrl ???만 넣어도 될까 ?
+        if(imgFile !== "") { //imgUrl ???만 넣어도 될까 ?
             const fileRef = storageService.ref().child(`${user.uid}/${handleRandom()}`)
+            console.log(fileRef)
             const res =  await fileRef.putString(imgFile, "data_url")
             imgUrl = await res.ref.getDownloadURL()
         }
@@ -83,8 +82,8 @@ const Home = ({ user }) => {
             const { currentTarget: { result } } = finishedEvent;
             setImgFile(result)
         }
-        reader.readAsDataURL(theFile)
-        console.log(imgFile)
+        reader.readAsDataURL(theFile) //readAsDataUrl을 넣어야 위에 currentTarget에 result가 보임 
+        // console.log(imgFile)
     }
 
     const handleClear = e => setImgFile(null)
