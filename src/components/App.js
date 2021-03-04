@@ -30,16 +30,21 @@ function App() {
     })
     
   }, [])
-  console.log(user)
+  // console.log(user)
 
-  const refreshUser = () => {
+  const refreshUser = () => { //얘는 먼저 읽혀서 user를 다시 잡아줘야됨 실행될 때
     const user = authService.currentUser;
+    // console.log(user)
     setUser({
       displayName: user.displayName,
       uid: user.uid,
       updateProfile: (args) => user.updateProfile(args) 
     })
   }
+
+//   const refreshUser = () =>
+// setUserObj ({... authService.currentUser});
+  
 
  
 
