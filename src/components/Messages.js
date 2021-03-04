@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { dbService, storageService } from 'fbase'
+import { authService, dbService, storageService } from 'fbase'
 
 
 const Messages = ({ data, isOwner }) => {

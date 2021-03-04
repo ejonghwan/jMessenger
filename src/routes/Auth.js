@@ -28,15 +28,20 @@ const Auth = () => {
             if(newAccount) {
                 // setNewAccount(true)
                  data = await authService.createUserWithEmailAndPassword(email, password)
+                 await authService.currentUser.updateProfile({
+                    displayName:'asdasd'
+                })
+                console.log(11, authService.currentUser)
             } else {
                 // setNewAccount(false)
                  data = await authService.signInWithEmailAndPassword(email, password)
             }
-            console.log(data)
+            // console.log(data)
         } catch (err) {
             setError(err.message)
         }
     }
+
 
     
     const handleToggle = () => setNewAccount(prev => !prev)

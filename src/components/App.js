@@ -16,17 +16,36 @@ function App() {
     authService.onAuthStateChanged((user) => {
       if(user) {
         setIsLoggedIn(true)
-        setUser(user)
+        // setUser(user)
+        setUser({
+          displayName: user.displayName,
+          uid: user.uid,
+          updateProfile: function(args) { return user.updateProfile(args) }
+        })
+        
       } else {
         setIsLoggedIn(false)
       }
       setInit(true)
     })
+    
   }, [])
+  console.log(user)
+
+  const refreshUser = () => {
+    const user = authService.currentUser;
+    setUser({
+      displayName: user.displayName,
+      uid: user.uid,
+      updateProfile: (args) => user.updateProfile(args) 
+    })
+  }
+
+ 
 
   return (
     <>
-      {init ? <AppRouter isLoggedIn={isLoggedIn} user={user} /> : "initializing..."}
+      {init ? <AppRouter isLoggedIn={isLoggedIn} user={user} refreshUser={refreshUser}/> : "initializing..."}
       <footer>&copy; {new Date().getFullYear()}</footer>
     </>
   )

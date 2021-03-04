@@ -9,6 +9,7 @@ const Home = ({ user }) => {
     const [messageArr, setMessageArr] = useState([]);
     const [imgFile, setImgFile] = useState()
 
+  
 
     // get 방식
     // const getDbValue = async() => {
@@ -106,6 +107,7 @@ const Home = ({ user }) => {
                         <button onClick={handleClear}>clear img</button>
                     </div>
                 )}
+                
                 
             </form>
             <ul>
